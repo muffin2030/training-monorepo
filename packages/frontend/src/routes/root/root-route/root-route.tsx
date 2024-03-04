@@ -11,21 +11,17 @@ export const RootRoute: FC = () => {
   const { isAuthorized, backUrl } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    const callbackFn = () => {
-      if (isAuthorized) {
-        navigate(backUrl || "/main");
+    if (isAuthorized) {
+      navigate(backUrl || "/main");
 
-        if (backUrl) {
-          utils
-            .resolveWithValue(undefined, 100)
-            .then(() => dispatch(setBackUrl(null)));
-        }
-      } else {
-        navigate("/login");
+      if (backUrl) {
+        utils
+          .resolveWithValue(undefined, 100)
+          .then(() => dispatch(setBackUrl(null)));
       }
-    };
-
-    callbackFn();
+    } else {
+      navigate("/login");
+    }
   }, [isAuthorized, navigate, backUrl]);
 
   return (
