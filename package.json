@@ -1,0 +1,21 @@
+{
+  "name": "@tm/root",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "lerna": "^8.1.2"
+  },
+  "dependencies": {},
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "backend": "yarn workspace @tm/backend",
+    "frontend": "yarn workspace @tm/frontend",
+    "start": "concurrently \"yarn frontend start\" \"yarn backend start\"",
+    "build": "npx lerna run build"
+  }
+}

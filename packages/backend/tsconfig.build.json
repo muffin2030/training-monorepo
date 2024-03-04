@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.build.json",
+
+  "compilerOptions": {
+    "outDir": "./lib",
+    "jsx": "react",
+    "esModuleInterop": true,
+    "allowJs": true
+  },
+
+  "include": ["./**/*"]
+}
