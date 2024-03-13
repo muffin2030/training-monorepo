@@ -1,14 +1,19 @@
-# install dependencies
+## install dependencies
 ```shell
 yarn
 ```
 
-# build dependencies
+## build dependencies
 ```shell
 yarn build
 ```
 
-# start dev servers
+## start dev servers
 ```shell
 yarn start
+```
+
+## run tests
+```shell
+yarn test
 ```
