@@ -2,9 +2,9 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
-
 const stylesHandler = "style-loader";
 const isProduction = process.env.NODE_ENV === "production";
+const { ModuleFederationPlugin } = require("webpack").container;
 
 const config = {
   entry: "./src/index.tsx",
@@ -42,6 +42,13 @@ const config = {
   plugins: [
     new HtmlWebpackPlugin({
       template: "index.html",
+    }),
+    new ModuleFederationPlugin({
+      name: "frontendApp",
+      filename: "remoteEntry.js",
+      exposes: {
+        "./MF_frontendApp": "./src/bootstrap",
+      },
     }),
     new MiniCssExtractPlugin(),
     new ForkTsCheckerWebpackPlugin(),

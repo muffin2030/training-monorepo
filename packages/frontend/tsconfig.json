@@ -2,12 +2,13 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
-    "module": "es6",
+    "module": "es2022",
     "target": "es5",
     "allowJs": true,
     "jsx": "react-jsx",
     "skipLibCheck": true,
     "moduleResolution": "NodeNext",
+    "allowImportingTsExtensions": true,
     "paths": {
       "@app/*": ["./src/*"],
       "@root/*": ["."]

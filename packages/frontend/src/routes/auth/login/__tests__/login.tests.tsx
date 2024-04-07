@@ -38,7 +38,7 @@ test("should render Login component", async () => {
 });
 
 test("should have valid default email and password", async () => {
-  const { getByText, getByTestId } = render(
+  const { getByTestId } = render(
     <LoginInner onSubmit={submitCallback} queryState={{}} />,
   );
   const email = getByTestId("email");
