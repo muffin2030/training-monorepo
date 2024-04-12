@@ -1,16 +1,41 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, Suspense, useEffect, useState } from "react";
 import { RootRoute } from "@app/routes/root/root-route/root-route";
-import { createBrowserRouter, Link, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Cookies from "js-cookie";
 import { logout, setTokens } from "@app/redux/authSlice/authSlice";
 import { useDispatch, useSelector } from "@app/redux/store";
 import { useLazyRefreshTokensQuery } from "@app/api/authApi/authApi";
-import { NotFoundPage } from "@app/components/route-not-found/not-found-page";
+import { NotFoundPage } from "@app/routes/route-not-found/not-found-page";
 import { Login } from "@app/routes/auth/login/login";
-import { MainRoute } from "@app/routes/main/main-route/main-route";
 import { PrivateRoute } from "@app/components/private-route/private-route";
-import { $container } from "./styles";
-import { TodoRoute } from "@app/routes/todo/todo-route/todo-route";
+import { $container, $fallback } from "./styles";
+import { lazy } from "react";
+import { resolveWithValue } from "@tm/common/lib/utils/resolve-with-value";
+import { Layout } from "@app/components/layout/layout.tsx";
+
+const MainRoute = lazy(() =>
+  resolveWithValue(undefined, 1000).then(() =>
+    import("@app/routes/main/main-route/main-route.tsx").then(
+      ({ MainRoute }) => ({ default: MainRoute }),
+    ),
+  ),
+);
+
+const TodoRoute = lazy(() =>
+  resolveWithValue(undefined, 1000).then(() =>
+    import("@app/routes/todo/todo-route/todo-route.tsx").then(
+      ({ TodoRoute }) => ({ default: TodoRoute }),
+    ),
+  ),
+);
+
+const Fallback: FC = () => {
+  return (
+    <Layout>
+      <div className={$fallback}>Module is Loading...</div>
+    </Layout>
+  );
+};
 
 const router = createBrowserRouter([
   {
@@ -37,7 +62,9 @@ const router = createBrowserRouter([
         path: "main",
         element: (
           <PrivateRoute>
-            <MainRoute />
+            <Suspense fallback={<Fallback />}>
+              <MainRoute />
+            </Suspense>
           </PrivateRoute>
         ),
       },
@@ -45,7 +72,9 @@ const router = createBrowserRouter([
         path: "todo",
         element: (
           <PrivateRoute>
-            <TodoRoute />
+            <Suspense fallback={<Fallback />}>
+              <TodoRoute />
+            </Suspense>
           </PrivateRoute>
         ),
       },
@@ -74,12 +103,10 @@ const setCookies = (token: string | null, refreshToken: string | null) => {
 export const App: FC = () => {
   const dispatch = useDispatch();
 
-  const { token, refreshToken, isAuthorized } = useSelector(
-    (state) => state.auth,
-  );
+  const { token, refreshToken } = useSelector((state) => state.auth);
   const [isInitializing, setIsInitializing] = useState(true);
 
-  const [doRefreshTokens, { isFetching, data }] = useLazyRefreshTokensQuery();
+  const [doRefreshTokens, { isFetching }] = useLazyRefreshTokensQuery();
 
   useEffect(() => {
     if (!isInitializing) {

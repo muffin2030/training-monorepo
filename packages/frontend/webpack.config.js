@@ -2,7 +2,6 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
-const stylesHandler = "style-loader";
 const isProduction = process.env.NODE_ENV === "production";
 const { ModuleFederationPlugin } = require("webpack").container;
 
@@ -19,17 +18,18 @@ const config = {
     hot: true,
     liveReload: false,
     historyApiFallback: { disableDotRule: true, index: "/" },
-    proxy: {
-      "/api": {
+    proxy: [
+      {
+        context: "/api",
         target: "http://localhost:3001",
         changeOrigin: true,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "*",
+          "Access-Control-Allow-Headers": "*",
+        },
       },
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "*",
-        "Access-Control-Allow-Headers": "*",
-      },
-    },
+    ],
     client: {
       overlay: true,
     },
